@@ -1,0 +1,100 @@
+<% content_for :page_title do %>
+  <%= Spree.t(:users) %>
+<% end %>
+
+<% content_for :page_actions do %>
+  <%= button_link_to Spree.t(:new_user), new_admin_user_url, :class => "btn-success", :icon => 'add', :id => 'admin_new_user_link' %>
+<% end %>
+
+<% content_for :table_filter_title do %>
+  <%= Spree.t(:search) %>
+<% end %>
+
+<% content_for :table_filter do %>
+  <div data-hook="admin_users_index_search">
+    <%= search_form_for [:admin, @search], url: spree.admin_users_url do |f| %>
+      <div class="form-group">
+        <%= f.label Spree.t(:email) %>
+        <%= f.text_field :email_cont, class: "form-control js-quick-search-target" %>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <%= f.label Spree.t(:first_name) %>
+            <%= f.text_field :bill_address_firstname_cont, :class => 'form-control' %>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <%= f.label Spree.t(:last_name) %>
+            <%= f.text_field :bill_address_lastname_cont, :class => 'form-control' %>
+          </div>
+        </div>
+      </div>
+      <div data-hook="admin_users_index_search_buttons" class="form-actions">
+        <%= button Spree.t(:search), 'search' %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+<table class="table" id="listing_users" data-hook>
+  <thead>
+    <tr data-hook="admin_users_index_headers">
+      <th>
+        <%= sort_link @search,:email, Spree.t(:user), {}, {:title => 'users_email_title'} %>
+      </th>
+      <th class = "col-md-1">Role</th>
+      <th class = "col-md-1">Active</th>
+      <th data-hook="admin_users_index_header_actions" class="actions"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @users.each do |user|%>
+      <tr id="<%= spree_dom_id user %>" data-hook="admin_users_index_rows">
+        <td class='user_email'><%=link_to user.email, edit_admin_user_url(user) %></td>
+          <td class = "role" id =""> 
+            <span >
+            <%if user.spree_roles.any?%>
+              <%=user.spree_roles.first.name %> </span>
+            <%end%>
+          </td>
+         <td >
+          <% if user.is_active %>
+              <button id="<%=user.id %>" data-role ="<%if user.spree_roles.any?%>
+              <%=user.spree_roles.first.id %> </span>
+            <%end%>" type="button" class="btn btn-large btn-block btn-success btn-active">True</button>
+          <% else %>
+              <button id="<%=user.id %>" type="button" data-role ="<%=user.spree_roles.first.id %>"class="btn btn-large btn-block btn-warning btn-active">False</button>
+          <% end %>
+        </td>
+        <td data-hook="admin_users_index_row_actions" class="actions actions-2 ">
+          <%= link_to_edit user, :no_text => true %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<script type="text/javascript">
+   
+  $(".btn-active").click(function() {
+    var id = $(this).attr('id')
+    var role = $(this).attr('data-role')
+    var current_id = <%= spree_current_user.id %>
+
+    if(id == current_id) {
+      alert("This is current user.Can't do this action!");
+      return;
+    }
+    else{
+      $.ajax('/admin/users/'+id+'/active', {
+        type: "post",
+        success: function(data){
+          window.location.reload(true);
+        }
+    });  
+    }
+   
+  });
+</script>
+<%= paginate @users %>

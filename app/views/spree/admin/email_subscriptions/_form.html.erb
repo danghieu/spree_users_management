@@ -1,0 +1,20 @@
+
+<div data-hook="admin_dish_type_form">
+  <div class="col-md-8" data-hook="admin_dish_type_left">
+    <div class = "col-md-12"  class="" data-hook="admin_email_subscription_form_name">
+      <%= f.field_container :email, class: ['form-group'] do %>
+        <%= f.label :email, raw(Spree.t(:email) + content_tag(:span, ' *', class: 'required')) %>
+        <%= f.text_field :email,name: "email_subscription[email]", class: 'form-control title' %>
+        <%= error_message_on :user,:email %>
+      <% end %>
+    </div>
+
+    <div class = "col-md-3" data-hook="admin_dish_type_form_is_active">
+      <%= f.field_container :is_active, class: ['form-group'] do %>
+        <%= f.label :is_active, raw(Spree.t(:is_active)) %>
+        <%= select_tag "email_subscription[is_active]",options_for_select([["Yes", true],["No", false]], @is_active),:class => 'select2'%>
+      <% end %>
+    </div>
+  </div>
+
+</div> <!--- end admin_product_form_fields-->

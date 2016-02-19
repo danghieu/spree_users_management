@@ -1,0 +1,22 @@
+<% content_for :page_title do %>
+  <%= link_to Spree.t(:email_subscriptions), admin_email_subscriptions_url %>
+  / New
+<% end 
+%>
+
+<%= form_for @email_subscription, url: admin_email_subscriptions_url(@email_subscription), method: 'POST', html: { id: "new_dish_type", multipart: true } do |f|%>
+	<fieldset data-hook="new_email_subscription">
+		<%= render :partial => 'form', :locals => { :f => f } %>
+		
+		<div class="form-actions" data-hook="buttons">
+		  <%= button Spree.t('actions.create'), 'ok', 'submit', {class: 'btn-success'} %>
+		  <span class="or"><%= Spree.t(:or) %></span>
+		  <%= button_link_to Spree.t('actions.cancel'), admin_email_subscriptions_url, :icon => 'remove' %>
+		</div>
+	</fieldset>
+<% end %>
+
+
+
+
+
