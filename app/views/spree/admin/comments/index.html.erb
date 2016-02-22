@@ -1,0 +1,54 @@
+<% content_for :page_title do %>
+  <%= Spree.t(:comments) %>
+<% end %>
+
+<table class="table table-striped table-hover">
+  <thead>
+    <tr>
+     
+      <th class="col-md-6"><%= Spree.t(:email) %></th>
+      <th class="col-md-2">Active</th> 
+      <th class="col-md-2">Tools</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @user.each do |ob| %>
+      <tr>
+        
+        <td ><%= ob.email %></td>
+        <td >
+        <% if ob.is_active %>
+            <button id="<%=ob.id %>" type="button" class="btn btn-success btn-active">True</button>
+        <% else %>
+            <button id="<%=ob.id %>" type="button" class="btn btn-warning btn-active">False</button>
+        <% end %>
+
+
+
+        </td>
+        <td class="actions" data-hook="admin_products_index_row_actions">
+            <%= link_to_edit ob, :no_text => true, :class => 'edit' if can?(:edit, ob) %>
+            &nbsp;
+            <%= link_to_delete ob, :no_text => true if can?(:delete, ob) %>
+          </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+
+<script type="text/javascript">
+   
+  $(".btn-active").click(function() {
+    var id = $(this).attr('id')
+   $.ajax('/admin/email_subscriptions/'+id+'/active', {
+        type: "post",
+        success: function(data){
+          window.location.reload(true);
+        }
+    });
+  });
+</script>

@@ -60,9 +60,7 @@
           </td>
          <td >
           <% if user.is_active %>
-              <button id="<%=user.id %>" data-role ="<%if user.spree_roles.any?%>
-              <%=user.spree_roles.first.id %> </span>
-            <%end%>" type="button" class="btn btn-large btn-block btn-success btn-active">True</button>
+              <button id="<%=user.id %>" type="button" class="btn btn-large btn-block btn-success btn-active">True</button>
           <% else %>
               <button id="<%=user.id %>" type="button" data-role =""class="btn btn-large btn-block btn-warning btn-active">False</button>
           <% end %>
