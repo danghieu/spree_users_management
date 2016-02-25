@@ -9,7 +9,7 @@ module Spree
       before_action :check_json_authenticity, only: :index
       before_action :load_roles
       before_action :extract_roles_from_params, only: [:create, :update]
-
+      before_action :load_data
       def index
         respond_with(@collection) do |format|
           format.html
@@ -49,7 +49,26 @@ module Spree
           flash.now[:success] = Spree.t(:account_updated)
         end
 
-        render :edit
+        location_after_save
+      end
+
+      def delete_address
+        if(params[:address_id])
+          address = Spree::Address.find(params[:address_id])
+          address.destroy
+          address.save
+        end
+        render :addresses
+      end
+
+      def location_after_save
+        if params[:update_address]
+          render :addresses
+        elsif params[:create_address]
+          render :new_addresses
+        else
+          render :edit
+        end
       end
 
       def active
@@ -73,8 +92,22 @@ module Spree
         end
       end
 
+      def new_addresses
+        @user_address = @user.addresses.build
+        if request.put?
+          if @user.update_attributes(user_params)
+            flash.now[:success] = Spree.t(:account_updated)
+          end
+
+          render :new_addresses
+        end
+      end
+      def load_data
+        @district_list = ["Thanh Khê","Hải Châu", "Liên Chiểu", "Hòa Vang","Sơn Trà"]
+      end
       def orders
         params[:q] ||= {}
+        params[:q][:s] ||= "email asc"
         @search = Spree::Order.reverse_chronological.ransack(params[:q].merge(user_id_eq: @user.id))
         @orders = @search.result.page(params[:page]).per(Spree::Config[:admin_products_per_page])
       end
@@ -142,10 +175,14 @@ module Spree
       def user_params
         params.require(:user).permit(permitted_user_attributes |
                                      [:spree_role_ids,:is_active,
+                                      addresses_attributes: new_address_attributes,
                                       ship_address_attributes: permitted_address_attributes,
                                       bill_address_attributes: permitted_address_attributes])
       end
 
+      def new_address_attributes
+        permitted_address_attributes << [:title,:district]
+      end
       # handling raise from Spree::Admin::ResourceController#destroy
       def user_destroy_with_orders_error
         invoke_callbacks(:destroy, :fails)

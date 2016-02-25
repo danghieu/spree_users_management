@@ -1,17 +1,20 @@
-<%= form_for(@comment) do |f| %>
-  <% if @comment.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@comment.errors.count, "error") %> prohibited this comment from being saved:</h2>
 
-      <ul>
-      <% @comment.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
+<div data-hook="admin_dish_type_form">
+  <div class="col-md-8" data-hook="admin_dish_type_left">
+    <div class = "col-md-12"  class="" data-hook="admin_dish_type_form_name">
+      <%= f.field_container :body, class: ['form-group'] do %>
+        <%= f.label :body, raw(Spree.t(:body) + content_tag(:span, ' *', class: 'required')) %>
+        <%= f.text_area :body,name: "comment[body]",rows: 4, class: 'form-control title' %>
+        <%= f.error_message_on :body %>
       <% end %>
-      </ul>
     </div>
-  <% end %>
 
-  <div class="actions">
-    <%= f.submit %>
+    <div class = "col-md-4" data-hook="admin_dish_type_form_is_active">
+      <%= f.field_container :status, class: ['form-group'] do %>
+        <%= f.label :status, raw(Spree.t(:status)) %>
+        <%= select_tag "comment[status]",options_for_select([["PENDING", 0],["APPROVED", 1],["SPAM", 2],["TRASH", 3]],@status),:class => 'form-control '%>
+      <% end %>
+    </div>
   </div>
-<% end %>
+
+</div> <!--- end admin_product_form_fields-->

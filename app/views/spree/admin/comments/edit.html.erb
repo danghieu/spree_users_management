@@ -1,6 +1,22 @@
-<h1>Editing Comment</h1>
+<% content_for :page_title do %>
+  <%= link_to Spree.t(:comments), admin_comments_url %>
+  /<%=  Spree.t(:edit_comment) %>
+<% end 
+%>
 
-<%= render 'form' %>
 
-<%= link_to 'Show', @comment %> |
-<%= link_to 'Back', comments_path %>
+<%= form_for @comment, method: :put, :url => admin_comment_url(@comment), :html => {:id => "edit_comment", :multipart => true} do |f| %>
+	<fieldset data-hook="edit_dish_type">
+		<time style="margin-top:18px" datetime="<%= f.object.created_at.strftime("%Y-%m-%d")%>" class="icon comment-at">
+            <em><%= f.object.created_at.strftime("%Y")%></em>
+            <strong><%= f.object.created_at.strftime("%B")%></strong>
+            <span><%= f.object.created_at.strftime("%d")%></span>
+          </time>
+		<%= render :partial => 'form', :locals => { :f => f } %>
+		<div class="form-buttons filter-actions actions " data-hook="buttons">
+	        <%= button Spree.t('actions.update'), 'ok' %>
+	        <span class="or"><%= Spree.t(:or) %></span>
+	        <%= link_to_with_icon 'remove', Spree.t('actions.cancel'), admin_comments_url, :class => 'button' %>
+	    </div>
+    </fieldset>
+<% end %>
