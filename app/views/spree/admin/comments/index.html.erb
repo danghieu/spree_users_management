@@ -26,8 +26,8 @@
      <th class="col-md-1">Status</th> 
       <th class="col-md-2"><%= Spree.t(:auther) %></th>
       <th class="col-md-4">Comment</th> 
-      <th class="col-md-3">Comment on</th> 
-      <th class="col-md-2">Actions</th>
+      <th class="col-md-2">Comment on</th> 
+      <th class="col-md-3">Actions</th>
     </tr>
   </thead>
 
@@ -61,10 +61,16 @@
         <%=  mini_image ob.product %>
         <%= link_to ob.product.try(:name), edit_admin_product_path(ob.product) %>
         </td>
-        <td class="actions" data-hook="admin_products_index_row_actions">
+        <td id= "<%=ob.id%>" class="actions" data-hook="admin_products_index_row_actions">
+            <a id="1" class="btn btn-approve btn-success btn-sm icon-link with-tip action-edit no-text" data-action="approve" title="" href="" data-original-title="Approve"><span class="icon icon-ok"></span> 
+            </a>
+            &nbsp;
             <%= link_to_edit ob, :no_text => true, :class => 'edit' if can?(:edit, ob) %>
             &nbsp;
-            <%= link_to_delete ob, :no_text => true if can?(:delete, ob) %>
+            <a id="2" class="btn btn-spam btn-warning btn-sm icon-link with-tip action-edit no-text" data-action="Spam" title="" href="" data-original-title="Spam"><span class="icon icon-warning-sign"></span> 
+            </a>
+            &nbsp;
+            <%= link_to_delete ob, :no_text => true if can?(:delete, ob) %>   
           </td>
       </tr>
     <% end %>
@@ -79,6 +85,30 @@
   $('#filter').on('change', function() {
     var href = "/admin/comments?filter=" + this.value;
     $("#btn-comment-filter").attr("href", href);
+  });
+
+  $(".btn-approve").click(function() {
+    var status = $(this).attr('id');
+    var comments=$(this).parent().attr('id');
+    $.ajax('/admin/comments/update_status', {
+        type: "put",
+        data: { comment: {status : status},comments:comments },
+        success: function(data){
+          window.location.reload(true);
+        }
+    });
+  });
+
+  $(".btn-spam").click(function() {
+    var status = $(this).attr('id');
+    var comments=$(this).parent().attr('id');
+    $.ajax('/admin/comments/update_status', {
+        type: "put",
+        data: { comment: {status : status},comments:comments },
+        success: function(data){
+          window.location.reload(true);
+        }
+    });
   });
 
 </script>

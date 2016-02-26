@@ -6,6 +6,6 @@ module Dish
 		accepts_nested_attributes_for :product,
 		                               :reject_if => :all_blank
 		accepts_nested_attributes_for :user,
-		                               :reject_if => :all_blan
+		                               :reject_if => :all_blank
 	end
 end
