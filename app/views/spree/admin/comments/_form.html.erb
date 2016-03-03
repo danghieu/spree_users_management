@@ -8,7 +8,13 @@
         <%= f.error_message_on :body %>
       <% end %>
     </div>
-
+    <div class='value col-md-4' >
+      <%= f.field_container :rating, class: ['form-group'] do %>
+        <%= f.label :rating, raw(Spree.t(:rating) + content_tag(:span, ' *', class: 'required')) %>
+        <%= f.text_field :rating, name: "comment[rating]",type: "number", :step => "any" ,:min =>1, :max => 5,class: 'form-control title'%>
+        <%= f.error_message_on :rating %>
+      <% end %>
+    </div> 
     <div class = "col-md-4" data-hook="admin_dish_type_form_is_active">
       <%= f.field_container :status, class: ['form-group'] do %>
         <%= f.label :status, raw(Spree.t(:status)) %>

@@ -2,38 +2,32 @@
 Placeholder manifest file.
 the installer will append this file to the app vendored assets here: 'vendor/assets/stylesheets/spree/backend/all.css'
 */
-.PENDIND{background: #56CFAA}
+.PENDING{background: #56CFAA}
 .APPROVED{background: #A3D553}
 .SPAM{background: #FDD030}
 .TRASH{background: #F77049}
 .comment-at{float: left;}
-.comment-body {margin-left: 120px;text-align: center; vertical-align: middle;}
+.comment-body { vertical-align: middle;}
+.paginate .pagination{    margin: 0px 0;}
 .area { 
 
   position: relative;
 }
 
 .bubble { 
-  position: absolute; 
-  left: 0px; 
-  top: 8px; 
-  width: 135px; 
-  height: 84px; 
-  display: table; 
+
 }
 
 .bubble a {
-  display: table-cell; 
-  vertical-align: middle; 
-  text-align: center; 
+
 }
 time.icon
 {
   font-size: 1em; /* change icon size */
   display: block;
   position: relative;
-  width: 7em;
-  height: 7em;
+  width: 6em;
+  height: 6em;
   background-color: #fff;
   border-radius: 0.6em;
   box-shadow: 0 1px 0 #bdbdbd, 0 2px 0 #fff, 0 3px 0 #bdbdbd, 0 4px 0 #fff, 0 5px 0 #bdbdbd, 0 0 0 1px #bdbdbd;
@@ -70,7 +64,7 @@ time.icon em
 
 time.icon span
 {
-  font-size: 2.8em;
+  font-size: 2.4em;
   letter-spacing: -0.05em;
   padding-top: 0.8em;
   color: #2f2f2f;

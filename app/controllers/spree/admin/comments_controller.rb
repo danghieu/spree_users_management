@@ -12,12 +12,8 @@ module Spree
       end
 
       def index
-        @comments= Dish::Comment.order(created_at: :desc)
-        unless params[:filter].nil?              
-          @filter = params[:filter]
-          if  params[:filter] != 'all'
-            @comments = Dish::Comment.where(status: params[:filter]).order(created_at: :desc)
-          end
+        unless params[:filter].nil?
+          @filter =params[:filter]  
         end
       end
 
@@ -40,17 +36,17 @@ module Spree
             comments.each do |c|
               c.status = params[:comment][:status]
               c.save
-            end 
+            end
           end
         end
         respond_with(@comments) do |format|
-            format.html { redirect_to location_after_save }
-            format.js   { render layout: false }
+          format.html { redirect_to location_after_save }
+          format.js   { render layout: false }
         end
       end
 
       def load_data
-        @status =[ "PENDIND", "APPROVED", "SPAM", "TRASH" ]
+        @status =[ "PENDING", "APPROVED", "SPAM", "TRASH" ]
         @filter="all"
       end
 
@@ -58,7 +54,7 @@ module Spree
         admin_comments_url
       end
 
-       def collection
+      def collection
         return @collection if @collection.present?
         params[:q] ||= {}
         params[:q][:deleted_at_null] ||= "1"
@@ -71,11 +67,18 @@ module Spree
         # @search needs to be defined as this is passed to search_form_for
         @search = @collection.ransack(params[:q])
         @collection = @search.result.
-              page(params[:page]).
-              per(params[:per_page] || Spree::Config[:admin_products_per_page])
+          page(params[:page]).
+          per(params[:per_page] || Spree::Config[:admin_products_per_page])
 
-        @collection
-      end 
+        unless params[:filter].nil?
+          if params[:filter] != 'all'
+            @collection = @collection.where(status: params[:filter])
+          end
+        else
+          @collection = @collection.where.not(status: TRASH)
+        end
+        @collection.order(created_at: :desc)
+      end
 
     end
   end
