@@ -73,9 +73,23 @@
           </div>
         </td>
         <td >
-        <%=  mini_image ob.product %>
-        <%= link_to ob.product.try(:name), edit_admin_product_path(ob.product) %>
+          <% unless ob.product.nil?%>
+            <%=  mini_image ob.product %>
+            <%= link_to ob.product.try(:name), edit_admin_product_path(ob.product) %>
+          <% else %> 
+            
+            <% if ob.box.images.any? %>
+              <div class="comment-box_img"> 
+                <%= image_tag ob.box.images.first.attachment.url(:mini) %> 
+              </div>
+            <% end %>
+            <div style="margin-left:70px">
+               <p>Box:</p> <%= link_to ob.box.try(:name), edit_admin_box_path(ob.box) %>
+            </div>
+           
+          <% end %>
         </td>
+
         <td id= "<%=ob.id%>" class="actions" data-hook="admin_products_index_row_actions">
           <div>
             <a id="1" class="btn btn-update btn-success btn-sm icon-link with-tip action-edit no-text" data-action="approve" title="" href="" data-original-title="Approve"><span class="icon icon-ok"></span> 
