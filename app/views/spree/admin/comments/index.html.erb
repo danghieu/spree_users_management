@@ -83,8 +83,8 @@
                 <%= image_tag ob.box.images.first.attachment.url(:mini) %> 
               </div>
             <% end %>
-            <div style="margin-left:70px">
-               <p>Box:</p> <%= link_to ob.box.try(:name), edit_admin_box_path(ob.box) %>
+            <div style="text-align:center">
+               Box: <%= link_to ob.box.try(:name), edit_admin_box_path(ob.box) %>
             </div>
            
           <% end %>
