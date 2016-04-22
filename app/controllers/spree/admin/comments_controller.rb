@@ -83,6 +83,9 @@ module Spree
       def comment_includes
         [:user,:product=>[:master => [:images]],:box =>[:images]]
       end
+        @collection.order(created_at: :desc)
+      end
+
     end
   end
 end
