@@ -5,9 +5,8 @@ Spree::Core::Engine.routes.draw do
 		    	post 'active'
 		    end
   		end
-  		resources :users do
-        	resources :user_images
-
+  		resources :users do 
+        resources :user_images
   			member do
 		    	post 'active'
           get 'new_addresses'
@@ -26,7 +25,7 @@ Spree::Core::Engine.routes.draw do
     resources :products, concerns: :comments_concern
     resources :users, concerns: :comments_concern
 	end
-	
+  
   post '/admin/users/delete_address' => "/spree/admin/users#delete_address"
   # Add your extension routes here
 end
