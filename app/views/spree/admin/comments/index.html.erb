@@ -1,0 +1,132 @@
+
+<% content_for :page_title do %>
+  <%= Spree.t(:comments) %>
+<% end %>
+
+<%= form_tag update_status_admin_comments_url, method: :put do %>
+<div class ="comment-tools">
+  <div class="comment-action col-md-4">
+    <div class="form-group col-md-8">
+      <%= select_tag "comment[status]",options_for_select([["APPROVE", 1],["SPAM", 2],["TRASH", 3]], @status),:class => 'form-control '%>
+    </div>
+      <button data-confirm="Are you sure?" class="btn btn-delete btn-comment-action btn-success" name="" >APPLY</button>
+  </div>
+
+  <div class="comment-filter col-md-4">
+      <div class="form-group col-md-8">
+        <%= select_tag "filter",options_for_select([["All Comments", "all"],["PENDING", 0],["APPROVED", 1],["SPAM", 2],["TRASH", 3]], @filter),:class => 'form-control '%>
+      </div>
+      <a class="btn btn-success" id="btn-comment-filter" href="/admin/comments?filter=all">APPLY</a>
+  </div>
+  <div class="paginate" >
+    <%= paginate @comments %>
+  </div>
+</div>
+
+
+<table class="table table-striped table-hover">
+  <thead align="center">
+    <tr>
+      <th></th>
+     <th class="col-md-1">Status</th> 
+      <th class="col-md-2"><%= Spree.t(:auther) %></th>
+      <th class="col-md-1">Date</th> 
+      <th class="col-md-3">Comment</th> 
+      <th class="col-md-3">Comment on</th> 
+      <th class="col-md-2">Actions</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @comments.each do |ob| %>
+      <tr>
+        <td ><%= check_box_tag "comments[]", ob.id %></td>
+        <td > 
+          <span style="color:white;" class="btn btn-lagre btn-block <%= @status[ob.status] %>"><%= @status[ob.status] %></span>
+        </td>
+        <td ><%= link_to ob.user.try(:email), edit_admin_user_path(ob.user) %></td>
+        <td>
+          <time datetime="<%= ob.created_at.strftime("%Y-%m-%d")%>" class="icon comment-at">
+            <em><%= ob.created_at.strftime("%Y")%></em>
+            <strong><%= ob.created_at.strftime("%B")%></strong>
+            <span><%= ob.created_at.strftime("%d")%></span>
+          </time>
+        </td>
+        <td >
+          <div class= "comment-body">
+          <div class="area">
+              <div class="bubble">
+                  <a href="/admin/comments/<%= ob.id%>/edit"> 
+                    <%= truncate(ob.body, escape: false, length: 50){ }%>
+                  </a>
+              </div>
+              <div class="rating">
+                <% a= ob.rating %>
+                <%a.times do |i|%>
+                  <span class="icon icon-star btn-warning"></span> 
+                <%end%>
+              </div>
+          </div>         
+          </div>
+        </td>
+        <td >
+          <% unless ob.product.nil?%>
+            <%=  mini_image ob.product %>
+            <%= link_to truncate(ob.product.try(:name), escape: false,length: 20), edit_admin_product_path(ob.product) %>
+          <% else %> 
+            
+            <% if ob.box.images.any? %>
+              <div class="comment-box_img"> 
+                <%= image_tag ob.box.images.first.attachment.url(:mini) %> 
+              </div>
+            <% end %>
+            <div style="text-align:center">
+              <%= link_to ob.box.try(:name), edit_admin_box_path(ob.box) %>
+            </div>
+           
+          <% end %>
+        </td>
+
+        <td id= "<%=ob.id%>" class="actions" data-hook="admin_products_index_row_actions">
+          <div>
+            <a id="1" class="btn btn-update btn-success btn-sm icon-link with-tip action-edit no-text" data-action="approve" title="" href="" data-original-title="Approve"><span class="icon icon-ok"></span> 
+            </a>
+            &nbsp;
+            <%= link_to_edit ob, :no_text => true, :class => 'edit' if can?(:edit, ob) %>
+          </div>
+          <div style="margin-top:10px">
+             <a id="2" class="btn btn-update btn-warning btn-sm icon-link with-tip action-edit no-text" data-action="Spam" title="" href="" data-original-title="Spam"><span class="icon icon-warning-sign"></span> 
+            </a>
+            &nbsp;
+            <a id="3" class="btn btn-update btn-danger btn-sm icon-link with-tip action-edit no-text" data-action="Trash" title="" href="" data-original-title="Trash"><span class="icon icon-trash"></span>  
+            </a>
+          </div>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%end%>
+<%= paginate @comments %>
+<script type="text/javascript">
+   
+  $('#filter').on('change', function() {
+    var href = "/admin/comments?filter=" + this.value;
+    $("#btn-comment-filter").attr("href", href);
+  });
+
+  $(".btn-update").click(function() {
+    var status = $(this).attr('id');
+    var comments=$(this).parent().parent().attr('id');
+    $.ajax('/admin/comments/update_status', {
+        type: "put",
+        data: { comment: {status : status},comments:comments },
+        success: function(data){
+          window.location.reload(true);
+        }
+    });
+  });
+
+ 
+
+</script>

@@ -1,0 +1,33 @@
+<%= render partial: 'spree/admin/shared/error_messages', locals: { target: @user } %>
+
+<% content_for :page_title do %>
+  <%= link_to Spree.t(:users), admin_users_url %>
+  /  <%=@user.email %>
+<% end %>
+
+<%= form_for [ @user, @user_image],url: admin_user_user_images_url(@user), html: { multipart: true } do |f| %>
+  <div data-hook="new_image" class="panel panel-default">
+    <div class="panel-heading">
+      <h1 class="panel-title">
+        New Image
+      </h1>
+    </div>
+    <div class="panel-body">
+      <div class="form-group">
+        <div data-hook="thumbnail" class="col-md-3 text-center">
+          <%= f.label Spree.t(:thumbnail) %>
+            <img id="image" src="#" alt="your image" width="100px" />
+        </div>
+        <div class="col-md-9">
+          <%= render partial: 'form', locals: { f: f } %>
+        </div>
+
+        <div class="form-actions" data-hook="buttons">
+          <%= button Spree.t('actions.update'), 'save' %>
+          <span class="or"><%= Spree.t(:or) %></span>
+          <%= button_link_to Spree.t('actions.cancel'), spree.admin_user_url(@user), icon: 'delete', id: 'cancel_link' %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

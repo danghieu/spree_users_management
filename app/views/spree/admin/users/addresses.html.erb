@@ -1,0 +1,92 @@
+<% content_for :page_title do %>
+  <%= link_to "#{@user.email}", edit_admin_user_url(@user) %> / <%= Spree.t(:editing_resource, resource: plural_resource_name(Spree::Address)) %>
+<% end %>
+
+<%= render partial: 'spree/admin/users/sidebar', locals: { current: :address } %>
+
+<% content_for :page_actions do %>
+  <%= button_link_to Spree.t(:back_to_users_list), spree.admin_users_path, class: 'btn-primary', icon: 'chevron-left' %>
+  <%= button_link_to Spree.t(:create_new_address), spree.new_addresses_admin_user_url, class: "btn-success", icon: 'add' %>
+<% end %>
+
+<div data-hook="admin_user_addresses" id="admin_user_edit_addresses">
+  <div data-hook="admin_user_edit_form_header">
+    <%= render partial: 'spree/admin/shared/error_messages', locals: { target: @user } %>
+  </div>
+
+ <% i=0 %> 
+<% unless @user.addresses.any? %>
+    <div class="no-objects-found">
+    <%= Spree.t(:no_address_found) %>.
+
+  </div><!--end div no-object-found -->
+<% else %>
+    <table class="table sortable" data-hook="images_table" data-sortable-link="<%= %>">
+        <thead>
+          <tr data-hook="images_header">
+            <th colspan="2">
+              <%= Spree.t(:addresses) %>
+            </th>
+            <th class="actions"></th>
+          </tr>
+        </thead>
+
+        <tbody>
+         <%= form_for [:admin, @user], as: :user, url: admin_user_url(@user), method: :put do |f| %>
+          <%= f.fields_for :addresses, (@user.addresses) do |ff| %>
+            <tr id="" data-hook="addresses_row">
+              <td >
+                <a type=""  data-toggle="modal" data-target="#myModal_<%=ff.object.id%>">
+                    <%=ff.object.title%>
+                    
+                </a>
+              </td>
+               <!-- Modal -->
+                  <div class="modal fade" id="myModal_<%=ff.object.id%>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                          <h4 class="modal-title" id="myModalLabel"><%=ff.object.title%></h4>
+                        </div>
+                        <div class="modal-body">
+                          <% ff.object ||= Spree::Address.new(country: Spree::Country.new) %>
+                            <%= render :partial => 'address_field', :locals => { :f => ff, :type => ff.object } %>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          <%= submit_tag 'Update', name: 'update_address', :class => "btn  btn-success" %>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+              <td class="actions actions-2 text-right">
+                <a  data-toggle="modal" data-target="#myModal_<%=ff.object.id%>" class="btn btn-primary btn-sm icon-link with-tip action-edit no-text" title="" data-original-title="Edit"><span class="icon icon-edit"></span> 
+                 </a>
+                 <a  data-id="<%=ff.object.id%>" class="btn btn-delete-address btn-danger btn-sm  icon-link with-tip  no-text" data-confirm="Are you sure?"  title="" href=""><span class="icon icon-delete"></span> </a>
+              </td>
+            </tr>
+            <%end %>
+           <%end %>   
+        </tbody>
+      </table>
+
+<% end %>
+
+</div>
+
+<script type="text/javascript">
+   
+  $(".btn-delete-address").click(function() {
+
+    var id = $(this).attr('data-id')
+   $.ajax('/admin/users/delete_address', {
+        type: "post",
+        data: {address_id : id},
+        success: function(data){
+          window.location.reload(true);
+        }
+    });
+  });
+</script>

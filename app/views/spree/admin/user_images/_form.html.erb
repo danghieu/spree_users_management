@@ -1,0 +1,17 @@
+<div data-hook="admin_image_form_fields" class="row">
+  <div class="col-md-6">
+    <div data-hook="file" class="form-group">
+      <%= f.label :attachment, Spree.t(:filename) %>
+      <%= f.file_field :attachment , name: "user_image[attachment]", accept: 'image/png,image/gif,image/jpeg',id: "image_attachment" %>
+    </div>
+    <div data-hook="variant" class="field">
+      <%= f.hidden_field :viewable_id, name: "user_image[viewable_id]", :value => @user_image.viewable_id %><br>
+    </div>
+  </div>
+  <div data-hook="alt_text" class="col-md-12">
+    <div class="form-group"class="col-md-6">
+      <%= f.label :alt, Spree.t(:alt_text) %>
+      <%= f.text_area :alt  , name: "user_image[alt]", :rows => 4, :class => 'form-control' %>
+    </div>
+  </div>
+</div>
