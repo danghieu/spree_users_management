@@ -25,7 +25,11 @@ Spree::Core::Engine.routes.draw do
     resources :products, concerns: :comments_concern
     resources :users, concerns: :comments_concern
 	end
-  
+  namespace :api do
+    resources :users do
+      resources :user_images
+    end
+  end
   post '/admin/users/delete_address' => "/spree/admin/users#delete_address"
   # Add your extension routes here
 end
